@@ -21,13 +21,35 @@
       h3 {
         font-weight: normal;
       }
+      .app {
+        border: 1px solid grey;
+        margin: 10px;
+        padding: 10px;
+      }
+      .frame {
+        border: 1px solid grey;
+        margin: 10px;
+        padding: 10px;
+      }
+      .initial-html-color {
+        background-color: rgba(255, 0, 0, 0.1);
+      }
+      .hydrated-js-color {
+        background-color: rgba(0, 255, 0, 0.1);
+      }
+      .text-align-left {
+        text-align: left;
+      }
     </style>
-    <ul style="text-align: left">
-      <button onClick="window.resolveSidebar()">
-        Load Sidebar JS code
+    <ul className='text-align-left'>
+      <button onClick="window.resolveMessages()">
+        Load Messages JS code
       </button>
-      <button onClick="window.resolveContent()">
-        Load Content JS code
+      <button onClick="window.resolveMessageForm()">
+        Load MessageForm JS code
+      </button>
+      <button onClick="window.resolveEmojiPicker()">
+        Load EmojiPicker JS code
       </button>
       <h3>
         <b>☝ Press these buttons to simulate JS code loading over the network!</b>

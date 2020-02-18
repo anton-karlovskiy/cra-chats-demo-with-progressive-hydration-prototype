@@ -1,8 +1,8 @@
 
-import React from "react";
-import ReactDOM from "react-dom";
-import ReactDOMServer from "react-dom/server";
-import getApp from "./App";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import ReactDOMServer from 'react-dom/server';
+import getApp from './App';
 
 // Our app component tree looks like this:
 // - App
@@ -30,7 +30,7 @@ function doServerRender() {
     false
   );
   const rootElement = document.getElementById(
-    "root"
+    'root'
   );
   // Just fill the initial HTML. As if it's server rendered.
   rootElement.innerHTML = ReactDOMServer.renderToString(
@@ -45,11 +45,11 @@ function doClientRender() {
     true
   );
   const rootElement = document.getElementById(
-    "root"
+    'root'
   );
   // Start hydrating the app. Note that in Concurrent Mode,
   // we don't need *all* code to be loaded. Notice how if
-  // you press "Load Sidebar JS code", you can interact
+  // you press 'Load Sidebar JS code', you can interact
   // with the Sidebar even though the Content component
   // hasn't loaded its code yet.
   ReactDOM.createRoot(rootElement, {

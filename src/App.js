@@ -1,122 +1,69 @@
 
-import React from "react";
+import React, { Suspense, lazy } from 'react';
+import RealMessages from './components/Messages';
+import RealMessageForm from './components/MessageForm';
+import RealEmojiPicker from './components/EmojiPicker';
 
-// This is a setup function that simulates client/server setup.
-// On the server, it simulates Sidebar and Content being available right away.
-// On the client, it simulates them resolving over network (when you press a button).
-export default function getApp(isSimulatingNetwork) {
-  let Sidebar;
-  let Content;
+const getApp = isSimulatingNetwork => {
+  let Messages;
+  let MessageForm;
+  let EmojiPicker;
+
   if (isSimulatingNetwork) {
-    // Artificially delay the components, as if we fetch code over network.
-    Sidebar = React.lazy(
+    Messages = lazy(
       () =>
         new Promise(resolve => {
-          // Triggered from buttons in public/index.html
-          window.resolveSidebar = () => {
-            resolve({ default: RealSidebar });
+          window.resolveMessages = () => {
+            resolve({default: RealMessages});
           };
         })
     );
-    Content = React.lazy(
+    MessageForm = lazy(
       () =>
         new Promise(resolve => {
-          // Triggered from buttons in public/index.html
-          window.resolveContent = () => {
-            resolve({ default: RealContent });
+          window.resolveMessageForm = () => {
+            resolve({default: RealMessageForm});
+          };
+        })
+    );
+    EmojiPicker = lazy(
+      () =>
+        new Promise(resolve => {
+          window.resolveEmojiPicker = () => {
+            resolve({default: RealEmojiPicker});
           };
         })
     );
   } else {
-    // On the server, we have the components ready right away.
-    Sidebar = RealSidebar;
-    Content = RealContent;
+    Messages = RealMessages;
+    MessageForm = RealMessageForm;
+    EmojiPicker = RealEmojiPicker;
   }
 
-  function RealSidebar() {
-    const [count, setCount] = React.useState(0);
-    const [didHydrate, setDidHydrate] = React.useState(false);
-    React.useEffect(() => {
-      // Make it easy to see when the code has loaded.
-      setDidHydrate(true);
-    }, []);
-
+  const App = () => {
     return (
-      <div
-        style={{
-          background: didHydrate
-            ? "rgba(0, 255, 0, 0.1)"
-            : "rgba(255, 0, 0, 0.1)",
-          border: "1px solid grey",
-          margin: 10,
-          padding: 10
-        }}>
-        <h1>
-          Sidebar ({didHydrate ? "Hydrated with JS" : "Initial HTML"})
-        </h1>
-        <button onClick={() => setCount(c => c + 1)}>
-          Clicked on sidebar {count} times
-        </button>
-      </div>
-    );
-  }
-
-  function RealContent() {
-    const [count, setCount] = React.useState(0);
-    const [didHydrate, setDidHydrate] = React.useState(false);
-    React.useEffect(() => {
-      // Make it easy to see when the code has loaded.
-      setDidHydrate(true);
-    }, []);
-
-    return (
-      <div
-        style={{
-          background: didHydrate
-            ? "rgba(0, 255, 0, 0.1)"
-            : "rgba(255, 0, 0, 0.1)",
-          border: "1px solid grey",
-          margin: 10,
-          padding: 10
-        }}>
-        <h1>
-          Content ({didHydrate ? "Hydrated with JS" : "Initial HTML"})
-        </h1>
-        <button onClick={() => setCount(c => c + 1)}>
-          Clicked on content {count} times
-        </button>
-      </div>
-    );
-  }
-
-  function App() {
-    return (
-      <div
-        className="App"
-        style={{
-          border: "1px solid grey",
-          margin: 10,
-          padding: 10
-        }}>
-        <h1>React Progressive Hydration Demo*</h1>
+      <div className='app'>
+        <h1>React Progressive Hydration Chats Demo*</h1>
         <h3>
-          <i>
-            * very experimental — likely contains bugs.
-          </i>
+          <i>* very experimental — likely contains bugs.</i>
         </h3>
         <h2>
-          This app is server-rendered to HTML.{" "}Concurrent Mode lets us hydrate parts of UI without waiting for <i>all</i> JS to load.
+          This app is server-rendered to HTML.{' '}Concurrent Mode lets us hydrate parts of UI without waiting for <i>all</i> JS to load.
         </h2>
-        <React.Suspense fallback={<h2>Loading sidebar...</h2>}>
-          <Sidebar />
-        </React.Suspense>
-        <br />
-        <React.Suspense fallback={<h2>Loading content...</h2>}>
-          <Content />
-        </React.Suspense>
+        <Suspense fallback={<h2>Loading Messages...</h2>}>
+          <Messages />
+        </Suspense>
+        <Suspense fallback={<h2>Loading MessageForm...</h2>}>
+          <MessageForm />
+        </Suspense>
+        <Suspense fallback={<h2>Loading EmojiPicker...</h2>}>
+          <EmojiPicker />
+        </Suspense>
       </div>
     );
-  }
+  };
 
   return App;
-}
+};
+
+export default getApp;
