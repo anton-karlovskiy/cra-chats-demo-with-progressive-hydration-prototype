@@ -31,7 +31,7 @@ const getApp = isSimulatingNetwork => {
   }
 
   const App = () => {
-    const [messages, setMessages] = useState(['First message.', 'Second message.']);
+    const [messages, setMessages] = useState(['Default message #1.', 'Default message #2.']);
     const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
     const addMessageHandler = message => {
       if (message) {
