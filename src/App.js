@@ -1,5 +1,5 @@
 
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useState } from 'react';
 import RealMessages from './components/Messages';
 import RealMessageForm from './components/MessageForm';
 import RealEmojiPicker from './components/EmojiPicker';
@@ -7,7 +7,6 @@ import RealEmojiPicker from './components/EmojiPicker';
 const getApp = isSimulatingNetwork => {
   let Messages;
   let MessageForm;
-  let EmojiPicker;
 
   if (isSimulatingNetwork) {
     Messages = lazy(
@@ -26,21 +25,20 @@ const getApp = isSimulatingNetwork => {
           };
         })
     );
-    EmojiPicker = lazy(
-      () =>
-        new Promise(resolve => {
-          window.resolveEmojiPicker = () => {
-            resolve({default: RealEmojiPicker});
-          };
-        })
-    );
   } else {
     Messages = RealMessages;
     MessageForm = RealMessageForm;
-    EmojiPicker = RealEmojiPicker;
   }
 
   const App = () => {
+    const [messages, setMessages] = useState(['First message.', 'Second message.']);
+    const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
+    const addMessageHandler = message => {
+      if (message) {
+        setMessages(prevMessages => ([...prevMessages, message]));
+      }
+    };
+
     return (
       <div className='app'>
         <h1>React Progressive Hydration Chats Demo*</h1>
@@ -51,14 +49,16 @@ const getApp = isSimulatingNetwork => {
           This app is server-rendered to HTML.{' '}Concurrent Mode lets us hydrate parts of UI without waiting for <i>all</i> JS to load.
         </h2>
         <Suspense fallback={<h2>Loading Messages...</h2>}>
-          <Messages />
+          <Messages messages={messages} />
         </Suspense>
         <Suspense fallback={<h2>Loading MessageForm...</h2>}>
-          <MessageForm />
+          <MessageForm addMessage={addMessageHandler} />
         </Suspense>
-        <Suspense fallback={<h2>Loading EmojiPicker...</h2>}>
-          <EmojiPicker />
-        </Suspense>
+        {isEmojiPickerOpen && (
+          <Suspense fallback={<h2>Loading EmojiPicker...</h2>}>
+            <RealEmojiPicker />
+          </Suspense>
+        )}
       </div>
     );
   };

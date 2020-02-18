@@ -1,8 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 
-const Messages = () => {
-  const [count, setCount] = useState(0);
+const Messages = ({ messages }) => {
   const [didHydrate, setDidHydrate] = useState(false);
   useEffect(() => {
     setDidHydrate(true);
@@ -13,9 +12,20 @@ const Messages = () => {
       <h1>
         Messages ({didHydrate ? 'Hydrated with JS' : 'Initial HTML'})
       </h1>
-      <button onClick={() => setCount(c => c + 1)}>
-        Clicked on Messages {count} times
-      </button>
+      <ul
+        style={{
+          width: 'max-content',
+          margin: '0 auto'
+        }}>
+        {messages.map((message, index) => (
+          <li
+            key={index}
+            
+            className='text-align-left'>
+            {message}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
